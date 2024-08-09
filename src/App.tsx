@@ -49,15 +49,6 @@ const App: FC<AppProps> = ({}) => {
           </ul>
         </div>
 
-        {/* <div>
-          <h3>Years</h3>
-          <ul>
-            {years.map((year, index) => (
-              <li key={index}>{year}</li>
-            ))}
-          </ul>
-        </div> */}
-
         <table>
           <thead>
             <tr>
@@ -72,7 +63,9 @@ const App: FC<AppProps> = ({}) => {
                 {week.map(({ date, inCurrentMonth, isCurrentDate }, idx) => (
                   <td
                     key={idx}
-                    onClick={() => selectDate(date)}
+                    onClick={() =>
+                      selectDate({ date, inCurrentMonth, isCurrentDate })
+                    }
                     onMouseEnter={() => onHoverDate(date)}
                     onMouseLeave={() => onHoverDate(null)}
                     style={{
@@ -84,6 +77,8 @@ const App: FC<AppProps> = ({}) => {
                         ? "yellow"
                         : "transparent",
                       cursor: "pointer",
+                      textAlign: "center",
+                      transition: "all 0.2s ease-out",
                     }}
                   >
                     {date.format("jD")}

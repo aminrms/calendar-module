@@ -1,5 +1,9 @@
 import moment, { type Moment } from "moment-jalaali";
-import type { CalendarConstructor, CalenderType } from "./Calender.types";
+import type {
+  CalendarConstructor,
+  CalenderType,
+  EachCalenderDateType,
+} from "./Calender.types";
 import { BaseCalender } from "./BaseCalender";
 
 class Calender extends BaseCalender {
@@ -51,18 +55,9 @@ class Calender extends BaseCalender {
     return this.getEndOfMonth<T>().clone().endOf("week") as T;
   }
 
-  // Updated getCalendar method to include `inCurrentMonth` flag
-  getCalendar<T extends Moment>(): {
-    date: T;
-    inCurrentMonth: boolean;
-    isCurrentDate: boolean;
-  }[][] {
+  getCalendar<T extends Moment>(): EachCalenderDateType<T>[][] {
     let date = this.getStartOfCalendar<T>().clone().subtract(1, "day");
-    const calendar: {
-      date: T;
-      inCurrentMonth: boolean;
-      isCurrentDate: boolean;
-    }[][] = [];
+    const calendar: EachCalenderDateType<T>[][] = [];
 
     const startOfMonth = this.getStartOfMonth<T>();
     const endOfMonth = this.getEndOfMonth<T>();

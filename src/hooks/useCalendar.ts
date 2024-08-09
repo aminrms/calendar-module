@@ -1,6 +1,9 @@
 import { useState, useCallback, useEffect } from "react";
 import Calender from "../module/calender/index";
-import type { CalenderType } from "../module/calender/Calender.types";
+import type {
+  CalenderType,
+  EachCalenderDateType,
+} from "../module/calender/Calender.types";
 import moment, { type Moment } from "moment-jalaali";
 
 export const useCalendar = ({
@@ -94,16 +97,32 @@ export const useCalendar = ({
     return years;
   }, [calendar.type, initialYearRange]);
 
-  // Feature to select single or multiple days across months
-  const selectDate = useCallback((date: Moment) => {
-    setSelectedDates((prevSelectedDates) => {
-      if (prevSelectedDates.some((d) => d.isSame(date, "day"))) {
-        return prevSelectedDates.filter((d) => !d.isSame(date, "day"));
+  const selectDate = useCallback(
+    ({ date }: EachCalenderDateType<Moment>) => {
+      let tempSelectedDates = [...selectedDates];
+      if (tempSelectedDates.length >= 1) {
+        const startDate = tempSelectedDates[0];
+        if (date?.isSame(startDate, "day")) {
+          tempSelectedDates = [];
+        } else if (date?.isBefore(startDate, "day")) {
+          tempSelectedDates = [date];
+        } else {
+          let dates: Moment[] = [];
+          let currentDate = startDate.clone();
+          while (currentDate.isBefore(date, "day")) {
+            dates.push(currentDate.clone());
+            currentDate.add(1, "day");
+          }
+          dates.push(date.clone());
+          tempSelectedDates = dates;
+        }
+      } else {
+        tempSelectedDates = [date];
       }
-      return [...prevSelectedDates, date];
-    });
-  }, []);
-
+      setSelectedDates(tempSelectedDates);
+    },
+    [selectedDates]
+  );
   const onHoverDate = useCallback((date: Moment | null) => {
     setHoveredDate(date);
   }, []);
@@ -134,7 +153,7 @@ export const useCalendar = ({
       });
       setSelectedDates(updatedSelectedDates);
     }
-  }, [hoveredDate, selectedDates]);
+  }, [hoveredDate]);
 
   return {
     currentDate,
