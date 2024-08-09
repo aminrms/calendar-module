@@ -103,8 +103,12 @@ export const useCalendar = ({
       if (tempSelectedDates.length >= 1) {
         const startDate = tempSelectedDates[0];
         if (date?.isSame(startDate, "day")) {
-          tempSelectedDates = [];
-        } else if (date?.isBefore(startDate, "day")) {
+          if (tempSelectedDates.length>1) {
+            tempSelectedDates = [date];
+          } else {
+            tempSelectedDates = [];
+          }
+        } else if (date?.isBefore(startDate)) {
           tempSelectedDates = [date];
         } else {
           let dates: Moment[] = [];
